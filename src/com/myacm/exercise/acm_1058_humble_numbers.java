@@ -2,25 +2,17 @@ package com.myacm.exercise;
 
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class acm_1058_humble_numbers {
-	public static void main(String[] args) {
-//		acm_1058_humble_numbers acm = new acm_1058_humble_numbers();
-//		LinkedList<Long> l = new LinkedList<Long>();
-//		l.add(2L);
-//		l.add(1L);
-//		l.add(0L);
-//		l.add(333L);
-//		l.add(0L);
-//		Collections.sort(l, acm.new com());
-//		System.out.println(l.toString());
-		
+	public static void main(String[] args) {	
 		Scanner sc = new Scanner(System.in);
 		acm_1058_humble_numbers acm = new acm_1058_humble_numbers();
-		acm.calHumbleNumber();
-		Collections.sort(acm.list, acm.new com());
+		acm.list = new TreeSet<Long>(acm.new com());
+		acm.calList(acm.hhh, acm.hhh.length, 1);
+		System.out.println(acm.list.toString());
 		
 		while(sc.hasNext()){
 			int n = sc.nextInt();
@@ -40,16 +32,24 @@ public class acm_1058_humble_numbers {
 		}
 	}
 
-	private LinkedList<Long> list = new LinkedList<Long>();
+	private Set<Long> list;
 	
 	private long getHumbleNumber(int n) {
-		return list.get(n - 1);
+		int index = 0;
+		for(long a : list){
+			index++;
+			if(index != n)
+				continue;
+			return a;
+		}
+		return 0;
 	}
 	
 	private long h_2 = 2L,
 						h_3 = 3L,
 						h_5 = 5L,
 						h_7 = 7L;
+	private long[] hhh = {7,5,3,2};
 	private final long MAX_NUMBER = 2000000000;
 	
 	private void calHumbleNumber(){
@@ -68,7 +68,7 @@ public class acm_1058_humble_numbers {
 				long re_h3 = temp_h2 * temp_h3;
 				if(re_h3 > MAX_NUMBER)
 					break;
-				else if(re_h3 != 1)
+				else
 					list.add(re_h3);
 				
 				for(int c = 0; c < 32; c++){
@@ -77,7 +77,7 @@ public class acm_1058_humble_numbers {
 					long re_h5 = temp_h2 * temp_h3 * temp_h5;
 					if(re_h5 > MAX_NUMBER)
 						break;
-					else if(re_h5 != 1)
+					else
 						list.add(re_h5);
 					
 					for(int d = 0; d < 32; d++){
@@ -87,13 +87,34 @@ public class acm_1058_humble_numbers {
 						
 						if(re_h7 > MAX_NUMBER)
 							break;
-						else if(re_h7 != 1)
-						list.add(re_h7);
+						else
+							list.add(re_h7);
 					}
 				}
 			}
 		}
 		System.out.println(list.toString());
+	}
+	
+	private void calList(long[] hhh, int longSize, long re_h){
+		if(longSize != 0){
+			longSize--;
+			int d = 0;
+			while(d < 32){
+				long temp_h = power(hhh[longSize], d);
+				if(re_h > MAX_NUMBER)
+					break;
+				list.add(temp_h);
+				calList(hhh, longSize, temp_h);
+				
+				re_h *= temp_h;	
+				d++;
+				if(re_h > MAX_NUMBER)
+					break;
+				list.add(re_h);
+				calList(hhh, longSize, re_h);
+			}			
+		}
 	}
 	
 	private long power(long a, int p){
